@@ -44,7 +44,7 @@ rm  /usr/lib/x86_64-linux-gnu/qt4/bin/qmake
 ln -s /usr/local/Trolltech/Qt-4.8.6/bin/qmake /usr/lib/x86_64-linux-gnu/qt4/bin/qmake
 
 //下载源码
-cd /home && mkdir ifc && cd ifc && git clone https://github.com/withu2018/infinitecoin.git
+cd /home && mkdir ifc && cd ifc && git clone https://github.com/InfinitecoinCore/infinitecoin.git
 
 //执行静态编译 infinitecoin-qt
 cd infinitecoin && qmake bitcoin-qt-linux.pro RELEASE=1 USE_UPNP=0 USE_QRCODE=1 USE_IPV6=0 && make -f Makefile && strip infinitecoin-qt
