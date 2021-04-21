@@ -13,7 +13,11 @@
 #include <sys/time.h>
 #include <sys/resource.h>
 #else
-typedef int pid_t; /* define for windows compatiblity */
+
+
+//typedef int pid_t; /* define for windows compatiblity */
+
+
 #endif
 #include <map>
 #include <vector>
@@ -188,7 +192,7 @@ void runCommand(std::string strCommand);
 
 inline std::string i64tostr(int64 n)
 {
-    return strprintf("%"PRI64d, n);
+    return strprintf("%" PRI64d, n);
 }
 
 inline std::string itostr(int n)

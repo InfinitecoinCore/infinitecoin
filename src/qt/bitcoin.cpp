@@ -158,6 +158,7 @@ static void DisableSetUnhandledExceptionFilter()
 #ifndef BITCOIN_QT_TEST
 int main(int argc, char *argv[])
 {
+    QGuiApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 // TODO: implement URI support on the Mac.
 #if !defined(MAC_OSX)
     // Do this early as we don't want to bother initializing if we are just calling IPC
@@ -189,8 +190,8 @@ int main(int argc, char *argv[])
 #endif
 
     // Internal string conversion is all UTF-8
-    QTextCodec::setCodecForTr(QTextCodec::codecForName("UTF-8"));
-    QTextCodec::setCodecForCStrings(QTextCodec::codecForTr());
+    //QTextCodec::setCodecForTr(QTextCodec::codecForName("UTF-8"));
+    //QTextCodec::setCodecForCStrings(QTextCodec::codecForTr());
 
     Q_INIT_RESOURCE(bitcoin);
     QApplication app(argc, argv);

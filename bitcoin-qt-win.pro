@@ -1,15 +1,15 @@
 TEMPLATE = app
 TARGET = infinitecoin-qt
 macx:TARGET = "Infinitecoin-Qt"
-VERSION = 1.8.8.2
+VERSION = 1.9.3.2
 INCLUDEPATH += src src/json src/qt
-QT += core gui network
+QT += core network
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 DEFINES += QT_GUI BOOST_THREAD_USE_LIB BOOST_SPIRIT_THREADSAFE BOOST_THREAD_PROVIDES_GENERIC_SHARED_MUTEX_ON_WIN __NO_SYSTEM_INCLUDES
 
 CONFIG += no_include_pwd
 CONFIG += thread
-
+#CONFIG += C++11
 
 # DEPS_DIR = E:/workspaces/projects/deps
 
@@ -25,23 +25,23 @@ CONFIG += thread
 #BOOST_THREAD_LIB_SUFFIX=_win32-mt-s
 
 
-BOOST_LIB_SUFFIX=-mt-s
-BOOST_INCLUDE_PATH=E:/workspaces/projects/deps/boost_1_55_0
-BOOST_LIB_PATH=E:/workspaces/projects/deps/boost_1_55_0/stage/lib
-BDB_INCLUDE_PATH=E:/workspaces/projects/deps/db-4.8.30.NC/build_unix
-BDB_LIB_PATH=E:/workspaces/projects/deps/db-4.8.30.NC/build_unix
-OPENSSL_INCLUDE_PATH=E:/workspaces/projects/deps/openssl-1.0.1g/include
-OPENSSL_LIB_PATH=E:/workspaces/projects/deps/openssl-1.0.1g
-MINIUPNPC_INCLUDE_PATH=E:/workspaces/projects/deps
-MINIUPNPC_LIB_PATH=E:/workspaces/projects/deps]/miniupnpc
-QRENCODE_INCLUDE_PATH=E:/workspaces/projects/deps/qrencode-3.4.3
-QRENCODE_LIB_PATH=E:/workspaces/projects/deps/qrencode-3.4.3/.libs
+BOOST_LIB_SUFFIX=-mt
+#BOOST_INCLUDE_PATH=E:/workspaces/projects/deps/boost_1_55_0
+#BOOST_LIB_PATH=E:/workspaces/projects/deps/boost_1_55_0/stage/lib
+BDB_INCLUDE_PATH=D:/msys64/home/Administrator/db-4.8.30.NC/build_unix
+BDB_LIB_PATH=D:/msys64/home/Administrator/db-4.8.30.NC/build_unix
+#OPENSSL_INCLUDE_PATH=E:/workspaces/projects/deps/openssl-1.0.1g/include
+#OPENSSL_LIB_PATH=E:/workspaces/projects/deps/openssl-1.0.1g
+MINIUPNPC_INCLUDE_PATH=D:/msys64/home/Administrator/
+MINIUPNPC_LIB_PATH=D:/msys64/home/Administrator/miniupnpc-1.9
+QRENCODE_INCLUDE_PATH=D:/msys64/home/Administrator/qrencode-3.4.3
+QRENCODE_LIB_PATH=D:/msys64/home/Administrator/qrencode-3.4.3/.libs
 
 #uncomment the following section to enable building on windows:
-win32:LIBS += -lshlwapi
+LIBS += -lshlwapi -lssp
 LIBS += $$join(BOOST_LIB_PATH,,-L,) $$join(BDB_LIB_PATH,,-L,) $$join(OPENSSL_LIB_PATH,,-L,) $$join(QRENCODE_LIB_PATH,,-L,)
-LIBS += -lssl -lcrypto -ldb_cxx$$BDB_LIB_SUFFIX
-win32:LIBS += -lws2_32 -lole32 -loleaut32 -luuid -lgdi32
+LIBS += -lssl -lcrypto -ldb_cxx$$BDB_LIB_SUFFIX -Wa,-mbig-obj
+LIBS += -lws2_32 -lole32 -loleaut32 -luuid -lgdi32
 
 
 OBJECTS_DIR = build
@@ -54,19 +54,8 @@ USE_UPNP=-
 #USE_BUILD_INFO=1
 #USE_SSE2=0
 # use: qmake "RELEASE=1"
-
-RELEASE=1
-contains(RELEASE, 1) {
-    # Mac: compile for maximum compatibility (10.5, 32-bit)
-    macx:QMAKE_CXXFLAGS += -mmacosx-version-min=10.5 -arch i386 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.8.sdk
-    macx:QMAKE_CFLAGS += -mmacosx-version-min=10.5 -arch i386 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.8.sdk
-    macx:QMAKE_OBJECTIVE_CFLAGS += -mmacosx-version-min=10.5 -arch i386 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.8.sdk
-
-    !win32:!macx {
-        # Linux: static link and extra security (see: https://wiki.debian.org/Hardening)
-        LIBS += -Wl,-Bstatic -Wl,-z,relro -Wl,-z,now
-    }
-}
+QMAKE_CFLAGS += -pipe -fno-keep-inline-dllexport -Wa,-mbig-obj -fno-stack-protector
+QMAKE_CXXFLAGS += -pipe -fno-keep-inline-dllexport -Wa,-mbig-obj
 
 !win32 {
     # for extra security against potential buffer overflows: enable GCCs Stack Smashing Protection
@@ -80,7 +69,7 @@ QMAKE_CXXFLAGS *= -D_FORTIFY_SOURCE=2 -static
 # for extra security on Windows: enable ASLR and DEP via GCC linker flags
 win32:QMAKE_LFLAGS *= -Wl,--dynamicbase -Wl,--nxcompat
 # on Windows: enable GCC large address aware linker flag
-win32:QMAKE_LFLAGS *= -Wl,--large-address-aware
+#win32:QMAKE_LFLAGS *= -Wl,--large-address-aware
 # i686-w64-mingw32
 win32:QMAKE_LFLAGS *=-static-libgcc -static-libstdc++
 
@@ -90,7 +79,6 @@ static { # everything below takes effect with CONFIG ''= static
  CONFIG += staticlib # this is needed if you create a static library, not a static executable
  DEFINES+= STATIC
  message("~~~ static build ~~~") # this is for information, that the static build is done
- mac: TARGET = $$join(TARGET,,,_static) #this adds an _static in the end, so you can seperate static build from non static build
  win32: TARGET = $$join(TARGET,,,s) #this adds an s in the end, so you can seperate static build from non static build
 }
 
@@ -137,14 +125,6 @@ contains(BITCOIN_NEED_QT_PLUGINS, 1) {
 
 
 # regenerate src/build.h
-!win32|contains(USE_BUILD_INFO, 1) {
-    genbuild.depends = FORCE
-    genbuild.commands = cd $$PWD; /bin/sh share/genbuild.sh $$OUT_PWD/build/build.h
-    genbuild.target = $$OUT_PWD/build/build.h
-    PRE_TARGETDEPS += $$OUT_PWD/build/build.h
-    QMAKE_EXTRA_TARGETS += genbuild
-    DEFINES += HAVE_BUILD_INFO
-}
 QMAKE_CXXFLAGS += -msse2
 QMAKE_CFLAGS += -msse2
 
@@ -322,7 +302,6 @@ DEPENDPATH += src/qt/test
 QT += testlib
 TARGET = infinitecoin-qt_test
 DEFINES += BITCOIN_QT_TEST
-  macx: CONFIG -= app_bundle
 }
 
 
@@ -364,26 +343,6 @@ isEmpty(BOOST_THREAD_LIB_SUFFIX) {
     BOOST_THREAD_LIB_SUFFIX = $$BOOST_LIB_SUFFIX
 }
 
-isEmpty(BDB_LIB_PATH) {
-    macx:BDB_LIB_PATH = /opt/local/lib/db48
-}
-
-isEmpty(BDB_LIB_SUFFIX) {
-    macx:BDB_LIB_SUFFIX = -4.8
-}
-
-isEmpty(BDB_INCLUDE_PATH) {
-    macx:BDB_INCLUDE_PATH = /opt/local/include/db48
-}
-
-isEmpty(BOOST_LIB_PATH) {
-    macx:BOOST_LIB_PATH = /opt/local/lib
-}
-
-isEmpty(BOOST_INCLUDE_PATH) {
-    macx:BOOST_INCLUDE_PATH = /opt/local/include
-}
-
 win32:DEFINES += WIN32
 win32:RC_FILE = src/qt/res/bitcoin-qt.rc
 
@@ -398,23 +357,6 @@ win32:!contains(MINGW_THREAD_BUGFIX, 0) {
     QMAKE_LIBS_QT_ENTRY = -lmingwthrd $$QMAKE_LIBS_QT_ENTRY
 }
 
-!win32:!macx {
-    DEFINES += LINUX
-    LIBS += -lrt
-    # _FILE_OFFSET_BITS=64 lets 32-bit fopen transparently support large files.
-    DEFINES += _FILE_OFFSET_BITS=64
-}
-
-macx:HEADERS += src/qt/macdockiconhandler.h src/qt/macnotificationhandler.h
-macx:OBJECTIVE_SOURCES += src/qt/macdockiconhandler.mm src/qt/macnotificationhandler.mm
-macx:LIBS += -framework Foundation -framework ApplicationServices -framework AppKit -framework CoreServices
-macx:DEFINES += MAC_OSX MSG_NOSIGNAL=0
-macx:ICON = src/qt/res/icons/infinitecoin.icns
-macx:QMAKE_CFLAGS_THREAD += -pthread
-macx:QMAKE_LFLAGS_THREAD += -pthread
-macx:QMAKE_CXXFLAGS_THREAD += -pthread
-macx:QMAKE_INFO_PLIST = share/qt/Info.plist
-
 # Set libraries and includes at end, to use platform-defined defaults if not overridden
 INCLUDEPATH += $$BOOST_INCLUDE_PATH $$BDB_INCLUDE_PATH $$OPENSSL_INCLUDE_PATH $$QRENCODE_INCLUDE_PATH
 LIBS += $$join(BOOST_LIB_PATH,,-L,) $$join(BDB_LIB_PATH,,-L,) $$join(OPENSSL_LIB_PATH,,-L,) $$join(QRENCODE_LIB_PATH,,-L,)
@@ -423,13 +365,5 @@ LIBS += -lssl -lcrypto -ldb_cxx$$BDB_LIB_SUFFIX
 win32:LIBS += -lws2_32 -lshlwapi -lmswsock -lole32 -loleaut32 -luuid -lgdi32
 LIBS += -lboost_system$$BOOST_LIB_SUFFIX -lboost_filesystem$$BOOST_LIB_SUFFIX -lboost_program_options$$BOOST_LIB_SUFFIX -lboost_thread$$BOOST_THREAD_LIB_SUFFIX
 win32:LIBS += -lboost_chrono$$BOOST_LIB_SUFFIX
-macx:LIBS += -lboost_chrono$$BOOST_LIB_SUFFIX
-
-contains(RELEASE, 1) {
-    !win32:!macx {
-        # Linux: turn dynamic linking back on for c/c++ runtime libraries
-        LIBS += -Wl,-Bdynamic
-    }
-}
 
 system($$QMAKE_LRELEASE -silent $$TRANSLATIONS)
