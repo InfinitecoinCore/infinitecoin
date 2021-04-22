@@ -1,4 +1,8 @@
 //编译无界面钱包
+//ubuntu2004
+//如果在低于ubuntu2004版本
+//请将boost版本升级到1.66以上  
+//openssl升级到1.1.1g以上
 
 sudo apt-get update
 
@@ -9,7 +13,6 @@ sudo apt-get install libminiupnpc-dev
 sudo apt-get install -y make gcc g++ git libssl-dev build-essential libtool autotools-dev autoconf pkg-config libevent-dev libboost-all-dev libboost-dev libboost-system-dev libboost-filesystem-dev libboost-program-options-dev libboost-thread-dev libqrencode-dev libpng-dev
 
 sudo apt-get install -y libfontconfig1-dev libfreetype6-dev libx11-dev libxcursor-dev libxext-dev libxfixes-dev libxft-dev libxi-dev libxrandr-dev libxrender-dev
-
 
 sudo apt-get install unzip && wget http://download.oracle.com/berkeley-db/db-4.8.30.zip && unzip db-4.8.30.zip && sed -i 's/__atomic_compare_exchange/__atomic_compare_exchange_db/g' db-4.8.30/dbinc/atomic.h && cd db-4.8.30 && cd build_unix/ && ../dist/configure --prefix=/usr/local --enable-cxx && make && make install && cd ~
 
