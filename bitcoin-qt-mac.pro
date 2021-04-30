@@ -1,6 +1,6 @@
 TEMPLATE = app
 TARGET = "Infinitecoin-Qt"
-VERSION = 1.9.3.3
+VERSION = 1.9.3.4
 INCLUDEPATH += src src/json src/qt
 QT += core network
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
